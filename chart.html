@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+	<head>
+		<title> Moment Curvature Curve </title>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		 <div id="chart_div"></div>
+		 <div id="result"></div>
+		 
+		 
+		 <script src="js/vendor/jquery-1.11.2.min.js"></script>
+		 <script src="js/vendor/bootstrap.min.js"></script>
+		 <script src="dostuff.js"></script>
+		 <script src="js/main.js"></script>
+		 
+		 <script>
+			google.charts.load('current', {packages: ['corechart', 'line']});
+			google.charts.setOnLoadCallback(drawBasic);
+
+			function drawBasic() {
+
+				  var data = new google.visualization.DataTable();
+				  data.addColumn('number', 'Curvature');
+				  data.addColumn('number', 'Moment');
+
+				  data.addRows(result.length);
+				  for (var i=0; i<result.length; i++){	  
+					data.setCell(i,0,result[0][i]);
+					data.setCell(i,1,result[1][i]);
+				}
+				
+			  var options = {
+				hAxis: {
+				  title: 'Curvature'
+				},
+				vAxis: {
+				  title: 'Moment'
+				}
+			  };
+
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+	document.getElementById('result').innerHTML = 10;
+		 </script>
+         
+	</body>
+</html>
+      
