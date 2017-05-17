@@ -1,9 +1,11 @@
-    function maincode(P0,d,b,tf,tw,fy,axs,t1,t2,t4,t5,t6){
+function maincode(P0,d,b,tf,tw,fy,axs,t1,t4,t5){
 	  var r =0;
-	  var t7 = t5;
+	  var t2 = t1;
 	  var t3 = t1;
-	  var gs1 = 6;
-	  var gs2 = 4;
+	  var t6 = t5;
+	  var t7 = t5;
+	  var gs1 = 5;
+	  var gs2 = 2;
 	  var gs3 = 20;
 	  var gs4 = 10;
 	  var S = [];
@@ -14,8 +16,19 @@
 	  [matrix,x,y, Gx, Gy,dx,dy,Area,area,Ix,Iy,ix,iy,resi] = Sectionproperties(b,d,tf,tw,gs1,gs2,gs3,gs4,r);
 	  var load = P0;
 	  P0 = fy*area*load;
+	  console.log(P0);
 	  [temp] = temperature(matrix,b,d,tf,gs1,gs2,gs3,dx,dy,Gx,Gy,x,y,t1,t2,t3,t4,t5,t6,t7);
 	  [tstrain] = tempelong(temp,x,y,matrix);
+  var E = 200000;
+    var ststrain=0;
+  for (var i=0; i<=x; i++){
+    for (var j = 0; j <=y; j++){
+      if (matrix[i][j]==1){
+        ststrain = ststrain+ ((tstrain[i][j]*Area[i][j])/area);
+      }
+    }
+  }
+  var p = (P0/(area*E))-ststrain;
 	  var phi = 0;
 	  var k = -1;
 	  for (ki=-45; ki<46; ki++){
@@ -47,7 +60,7 @@
 			phi = (0.00003+(0.00000525*5*(ki-29)));         
 		}
 		phi = phi*500;
-		[Mx] = Momentcal(dx,dy,Area,matrix,Ix,Iy,phi,x,y,axs,P0,area,b,d,Gx,Gy,resi,tstrain,temp,fy);
+		[Mx] = Momentcal(dx,dy,Area,matrix,Ix,Iy,phi,x,y,axs,P0,area,b,d,Gx,Gy,resi,tstrain,temp,fy,p);
 	  var q = Mx.length;
 	  cur[k] = phi;
 	  for (j=0; j<q; j++){
@@ -57,11 +70,12 @@
 	  return [cur,S];
 	  
 	}
-	function maincodeminor(P0,d,b,tf,tw,fy,axs,t1,t2,t3,t4){
+	function maincodeminor(P0,d,b,tf,tw,fy,axs,t1,t2,t3){
 	  var r =0;
-	  var t7 = t3;
-	  var t6 = t2;
 	  var t5 = t1;
+	  var t4 = t2;
+	  var t6 = t2;
+	  var t7 = t3;
 	  var gs1 = 4;
 	  var gs2 = 4;
 	  var gs3 = 15;
@@ -76,6 +90,16 @@
 	  P0 = fy*area*load;
 	  [temp] = temperature(matrix,b,d,tf,gs1,gs2,gs3,dx,dy,Gx,Gy,x,y,t1,t2,t3,t4,t5,t6,t7);
 	  [tstrain] = tempelong(temp,x,y,matrix);
+        var ststrain=0;
+      var E = 200000;
+  for (var i=0; i<=x; i++){
+    for (var j = 0; j <=y; j++){
+      if (matrix[i][j]==1){
+        ststrain = ststrain+ (tstrain[i][j]*Area[i][j]/area);
+      }
+    }
+  }
+  var p = (P0/(area*E))-ststrain;
 	  var phi = 0;
 	  var k = -1;
 	  for (ki=-45; ki<46; ki++){
@@ -107,7 +131,7 @@
 			phi = (0.00003+(0.00000525*5*(ki-29)));         
 		}
 		phi = phi*500;
-		[Mx] = Momentcal(dx,dy,Area,matrix,Ix,Iy,phi,x,y,axs,P0,area,b,d,Gx,Gy,resi,tstrain,temp,fy);
+		[Mx] = Momentcal(dx,dy,Area,matrix,Ix,Iy,phi,x,y,axs,P0,area,b,d,Gx,Gy,resi,tstrain,temp,fy,p);
 	  var q = Mx.length;
 	  cur[k] = phi;
 	  for (j=0; j<q; j++){
@@ -115,21 +139,10 @@
 	  }
 	  }
 	  return [cur,S];
-	  console.log(cur);
-	  console.log(S);
 	}
 
-function Momentcal(dx,dy,Area,matrix,Ix,Iy,phi,x,y,axs,P0,area,b,d,Gx,Gy,resi,tstrain,temp,fy){
+function Momentcal(dx,dy,Area,matrix,Ix,Iy,phi,x,y,axs,P0,area,b,d,Gx,Gy,resi,tstrain,temp,fy,p){
   var E = 200000;
-  var ststrain=0;
-  for (var i=0; i<=x; i++){
-    for (var j = 0; j <=y; j++){
-      if (matrix[i][j]==1){
-        ststrain = ststrain+ (tstrain[i][j]*Area[i][j]/area);
-      }
-    }
-  }
-  var p = (P0/(area*E))-ststrain;
   [strainCG] = Newtonrap(phi,dx,dy,Gx,Gy,P0,x,y,axs,Area,matrix,p,b,d,resi,tstrain,temp,E,fy,area);
   var Yna = Gy-(strainCG/phi);
   var Xna = Gx-(strainCG/phi);
@@ -188,7 +201,7 @@ var countr = 0;
 var z = p;
 
 if (P0!=0){
-    var tolerr = Math.abs(0.01*P0);
+    var tolerr = Math.abs(0.001*P0);
 }
 else{
     var tolerr= 0.1;
@@ -216,41 +229,60 @@ while (Math.abs(error)>tolerr){
                 }
                 
                 [f,slope]=stress(strain,i,j,temp,E,fy);
-                
-                
-               
                 k = f*Area[i][j];
                 www = P;
                 P = k+www;
                 
-                ww = forcevar;
-                forcevar = ww+((slope*Area[i][j]));
+                //ww = forcevar;
+                // forcevar = ww+((slope*Area[i][j]));
             }
         }
     }
-  if (countr<25){
-    if (forcevar < area*200000){
-          forcevar= area*200000*0.1;
-    }
+ // if (countr<5){
+ //         forcevar= area*200000*0.01; 
+//  }
+  if (countr > 0 && countr < 15){
+    forcevar = area*200000*0.07;
   }
-  if (countr>24){
-    if (forcevar < area*200000){
-          forcevar= area*200000;
-    }
+  if (countr > 14 && countr < 30){
+    forcevar = area*2000000*0.1;
   }
+    if (countr > 29 && countr < 40){
+    forcevar = area*200000*0.5;
+  }
+      if (countr > 39 && countr < 80){
+    forcevar = area*200000;
+  }
+      if (countr > 79 && countr < 100){
+    forcevar = area*200000*5;
+  }
+  if (countr > 99 && countr < 120){
+    forcevar = area*200000*7;
+  }
+  if (countr > 119 && countr < 150){
+    forcevar = area*200000*25;
+  }
+    if (countr > 149){
+    forcevar = area*200000*50;
+  }
+  
+
+
   
     error = P0-P;
          if (error>0){
-             z = strainCG+Math.abs((error/forcevar));
+             z = strainCG+((error/forcevar));
             
          }
          if (error<0){
-             z = strainCG-Math.abs((error/forcevar));
+             z = strainCG+((error/forcevar));
             
          }
+    
          error = Math.abs(error);
-     if (countr ==300){
-       console.log(countr);
+     if (countr ==200){
+       var per_error = error*100/P0;
+       console.log(per_error);
        break;
      }
 }
@@ -343,10 +375,10 @@ for (var i = 0; i <= x; i++){
            }
 
           Area[i][j] = x1*x4;
-          Ix[i][j] = (x4*(x1^3))/12;
-          Iy[i][j] = (x1*(x4^3))/12;
+          Ix[i][j] = (x4*(x1**3))/12;
+          Iy[i][j] = (x1*(x4**3))/12;
         }
-        if ((i<=gs1-1 ||(i>(gs1+gs3)-1 && i<=x) ) && j>gs4-1 && j<= (gs2+gs4)-1){
+        if ((i<=gs1-1 ||(i>(gs1+gs3)-1 && i<=x) ) && j>gs4-1 && j<=(gs2+gs4)-1){
           if (dx[i][j]< b/2){
              resi[i][j] = r-(2*r*dx[i][j]*2/b);
           }else{
@@ -354,13 +386,13 @@ for (var i = 0; i <= x; i++){
           }
         
           Area[i][j] = x1*x2;
-          Ix[i][j] = (x2*(x1^3))/12;
-          Iy[i][j] = (x1*(x2^3))/12;
+          Ix[i][j] = (x2*(x1**3))/12;
+          Iy[i][j] = (x1*(x2**3))/12;
         }
         if (i>gs1-1 && i<=(gs1+gs3)-1 && (j<=gs4-1 ||(j> (gs2+gs4)-1 && j<=y))){
           Area[i][j] = x3*x4;
-          Ix[i][j] = (x4*(x3^3))/12;
-          Iy[i][j] = (x3*(x4^3))/12;
+          Ix[i][j] = (x4*(x3**3))/12;
+          Iy[i][j] = (x3*(x4**3))/12;
         }
         if (i>gs1-1 && i<=(gs1+gs3)-1 && j>gs4-1 && j<= (gs2+gs4)-1){
           if (dy[i][j]< d/2){
@@ -369,8 +401,8 @@ for (var i = 0; i <= x; i++){
                  resi[i][j] = r-(2*r*(dy[i][j]-0.5*d)*2/d);
           }
           Area[i][j] = x3*x2;
-          Ix[i][j] = (x2*(x3^3))/12;
-          Iy[i][j] = (x3*(x2^3))/12;
+          Ix[i][j] = (x2*(x3**3))/12;
+          Iy[i][j] = (x3*(x2**3))/12;
         }
         area = area+ Area[i][j];
       }
@@ -381,8 +413,8 @@ for (var i = 0; i <= x; i++){
   for (var i = 0; i <= x; i++){
     for (var j = 0; j <= y; j++){
       if (matrix[i][j]==1){
-        iy=iy+Area[i][j]*((Math.abs(dx[i][j]-Gx))^2);
-        ix=ix+Area[i][j]*((Math.abs(dy[i][j]-Gy))^2);
+        iy=iy+Area[i][j]*((Math.abs(dx[i][j]-Gx))**2);
+        ix=ix+Area[i][j]*((Math.abs(dy[i][j]-Gy))**2);
         resi[i][j] = resi[i][j] * 0.00125;
         
       }
@@ -436,7 +468,7 @@ for (var i=0; i<=x; i++){
     for (var j=0; j<=y; j++){
         if (matrix[i][j]==1){
             if (temp[i][j]<=750){
-                tstrain[i][j]=1.2*(10**(-5))*temp[i][j]+0.4*(10**(-8))*(temp[i][j]**2)-2.416*(10**(-4));
+                tstrain[i][j]=1.2*(10**(-5))*temp[i][j]+0.4*(10**(-8))*((temp[i][j])**2)-2.416*(10**(-4));
             }
             if (temp[i][j]>750 && temp[i][j]<=860){
                 tstrain[i][j]=1.1*(10**(-2));
@@ -450,7 +482,7 @@ for (var i=0; i<=x; i++){
 return [tstrain];
 }
 function stress(strain,i,j,temp,E,fy){
-var fyt, fpt, Et,ept,eyt,c,b,a
+var fyt, fpt, Et,ept,eyt,c,b,a;
 if (temp[i][j]<=100){
 fyt = fy;
 fpt = fy;
@@ -479,7 +511,7 @@ if (temp[i][j]>400 && temp[i][j]<=500){
 if (temp[i][j]>500 && temp[i][j]<=600){
     fyt=0.78*fy-((temp[i][j]-500)*(0.78*fy-0.47*fy)/100);
     fpt=0.36*fy-((temp[i][j]-500)*(0.36*fy-0.18*fy)/100);
-    Et=0.6*E-((temp-500)*(0.6*E-0.31*E)/100);
+    Et=0.6*E-((temp[i][j]-500)*(0.6*E-0.31*E)/100);
 }
 if (temp[i][j]>600 && temp[i][j]<=700){
     fyt=0.47*fy-((temp[i][j]-600)*(0.47*fy-0.23*fy)/100);
@@ -498,16 +530,16 @@ if (temp[i][j]>800 && temp[i][j]<=900){
 }
 ept=fpt/Et;
 eyt=0.02;
-c=((fyt-fpt)^2)/((eyt-ept)*Et-2*(fyt-fpt));
-b=(Math.abs(c*(eyt-ept)*Et+c^2))**0.5;
+c=((fyt-fpt)**2)/((eyt-ept)*Et-2*(fyt-fpt));
+b=(Math.abs(c*(eyt-ept)*Et+c**2))**0.5;
 a=(Math.abs((eyt-ept)*(eyt-ept+(c/Et))))**0.5;
 if (strain>=0){
-    if (strain<=ept+0.000001){
+    if (strain<=ept){
         f=strain*Et;
         slope=Et;
 	}
     
-    if (strain>ept+0.000001 && strain<= eyt){
+    if (strain>ept && strain<= eyt){
         f=fpt-c+(b/a)*((Math.abs((a**2)-(eyt-strain)**2))**0.5);
         slope=(b*(eyt-strain))/(a*(Math.abs((a**2)-(eyt-strain)**2))**0.5);
 	}
@@ -519,12 +551,12 @@ if (strain>=0){
 if (strain<0){
 	var negstr = -strain;
   strain = negstr;
-    if (strain<=ept+0.000001){
+    if (strain<=ept){
         f=strain*Et;
         slope=Et;
 	}
     
-    if (strain>ept+0.000001 && strain<= eyt){
+    if (strain>ept && strain<= eyt){
         f=fpt-c+(b/a)*((Math.abs((a**2)-(eyt-strain)**2))**0.5);
         slope=(b*(eyt-strain))/(a*(Math.abs((a**2)-(eyt-strain)**2))**0.5);
 	}
@@ -532,8 +564,8 @@ if (strain<0){
         f=fyt;
         slope=0;
 	}
-	f = -f;
+	negstr = -f;
+	f = negstr;
 }
  return [f,slope];
 }
-

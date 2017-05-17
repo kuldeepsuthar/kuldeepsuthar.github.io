@@ -22,7 +22,7 @@ $.urlParam = function(name){
             });
 
             console.log(values);
-			var result = maincode(values[0], values[1], values[2], values[3], values[4], values[5],0, values[6], values[7], values[8], values[9], values[10]);
+			var result = maincode(values[0], values[1], values[2], values[3], values[4], values[5],0, values[6], values[7], values[8]);
             console.log(result);
 			console.log(result[0].length);
 			plot_chart(result);
@@ -40,7 +40,7 @@ $.urlParam = function(name){
             });
 
             console.log(values);
-			var result = maincodeminor(values[0], values[1], values[2], values[3], values[4], values[5], 1, values[6], values[7], values[8], values[9]);
+			var result = maincodeminor(values[0], values[1], values[2], values[3], values[4], values[5], 1, values[6], values[7], values[8]);
             console.log(result);
 			console.log(result[0].length);
 			plot_chart(result);
