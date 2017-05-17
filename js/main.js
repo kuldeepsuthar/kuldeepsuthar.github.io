@@ -14,11 +14,14 @@ function maincode(P0,d,b,tf,tw,fy,axs,t1,t4,t5){
 	  }
 	  var cur = [];
 	  [matrix,x,y, Gx, Gy,dx,dy,Area,area,Ix,Iy,ix,iy,resi] = Sectionproperties(b,d,tf,tw,gs1,gs2,gs3,gs4,r);
-	  var load = P0;
-	  P0 = fy*area*load;
-	  console.log(P0);
 	  [temp] = temperature(matrix,b,d,tf,gs1,gs2,gs3,dx,dy,Gx,Gy,x,y,t1,t2,t3,t4,t5,t6,t7);
 	  [tstrain] = tempelong(temp,x,y,matrix);
+	  var load = P0;
+	  P0 = load*1000;
+	  console.log(P0);
+	  var Py = area*fy;
+	  
+	  console.log(Py);
   var E = 200000;
     var ststrain=0;
   for (var i=0; i<=x; i++){
@@ -86,8 +89,6 @@ function maincode(P0,d,b,tf,tw,fy,axs,t1,t4,t5){
 	  }
 	  var cur = [];
 	  [matrix,x,y, Gx, Gy,dx,dy,Area,area,Ix,Iy,ix,iy,resi] = Sectionproperties(b,d,tf,tw,gs1,gs2,gs3,gs4,r);
-	  var load = P0;
-	  P0 = fy*area*load;
 	  [temp] = temperature(matrix,b,d,tf,gs1,gs2,gs3,dx,dy,Gx,Gy,x,y,t1,t2,t3,t4,t5,t6,t7);
 	  [tstrain] = tempelong(temp,x,y,matrix);
         var ststrain=0;
@@ -100,6 +101,11 @@ function maincode(P0,d,b,tf,tw,fy,axs,t1,t4,t5){
     }
   }
   var p = (P0/(area*E))-ststrain;
+  var load = P0;
+	  P0 = load*1000;
+      console.log(P0);
+	  var Py = area*fy;
+	  console.log(Py);
 	  var phi = 0;
 	  var k = -1;
 	  for (ki=-45; ki<46; ki++){

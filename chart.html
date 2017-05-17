@@ -23,7 +23,7 @@
 
 				  var data = new google.visualization.DataTable();
 				  data.addColumn('number', 'Curvature');
-				  data.addColumn('number', 'Moment');
+				  data.addColumn('number', 'Moment (N-m)');
 
 				  data.addRows(result.length);
 				  for (var i=0; i<result.length; i++){	  
@@ -36,7 +36,7 @@
 				  title: 'Curvature'
 				},
 				vAxis: {
-				  title: 'Moment (N-m)'
+				  title: 'Moment in N-m'
 				}
 			  };
 

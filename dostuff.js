@@ -72,7 +72,7 @@ $.urlParam = function(name){
 							  title: 'Curvature'
 							},
 							vAxis: {
-							  title: 'Moment'
+							  title: 'Moment (N-m)'
 							},
 						  };
 
