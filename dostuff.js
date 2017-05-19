@@ -20,12 +20,13 @@ $.urlParam = function(name){
             $inputs.each(function() {
               values.push(parseFloat($(this).val()));
             });
-
             console.log(values);
 			var result = maincode(values[0], values[1], values[2], values[3], values[4], values[5],0, values[6], values[7], values[8]);
+			if (typeof(result) != "undefined"){
             console.log(result);
 			console.log(result[0].length);
 			plot_chart(result);
+			}
 			/*var json_result = JSON.stringify(result);
 			createCookie('mycookie', json_result);
 			window.location.href = "chart.html";*/
@@ -69,7 +70,7 @@ $.urlParam = function(name){
 						  var options = {
 							legend: 'none',
 							hAxis: {
-							  title: 'Curvature'
+							  title: 'Curvature (1/m)'
 							},
 							vAxis: {
 							  title: 'Moment (N-m)'
