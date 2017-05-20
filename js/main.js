@@ -15,14 +15,29 @@ function maincode(P0,d,b,tf,tw,fy,axs,t1,t4,t5){
 	  var cur = [];
 	  [matrix,x,y, Gx, Gy,dx,dy,Area,area,Ix,Iy,ix,iy,resi] = Sectionproperties(b,d,tf,tw,gs1,gs2,gs3,gs4,r);
 	  [temp] = temperature(matrix,b,d,tf,gs1,gs2,gs3,dx,dy,Gx,Gy,x,y,t1,t2,t3,t4,t5,t6,t7);
-	  [tstrain] = tempelong(temp,x,y,matrix);
 	  var load = P0;
-	  P0 = load*1000;
-	  console.log(P0);
-	  var Py = area*fy;
-	  
-	  console.log(Py);
+	  var Py =0;
+	  for (var i=0; i<=x; i++){
+        for (var j=0; j<=y; j++){
+            if (matrix[i][j] ==1){
+				if (temp[i][j] >= 900) {
+				alert("Please enter temperatures below 800°C");
+				return;
+				}
+				strain = 200;
+				[f,slope]=stress(strain,i,j,temp,E,fy);
+				Py = Py + Area[i][j]*f;
+			}
+		}
+	  }
+				
+	  P0 = area*fy*load;
+	  if (P0 >= Py){
+		  alert("Applied load is exceeding the capacity at given temperature");
+		  return;
+	  }
   var E = 200000;
+  [tstrain] = tempelong(temp,x,y,matrix);
     var ststrain=0;
   for (var i=0; i<=x; i++){
     for (var j = 0; j <=y; j++){
@@ -90,6 +105,27 @@ function maincode(P0,d,b,tf,tw,fy,axs,t1,t4,t5){
 	  var cur = [];
 	  [matrix,x,y, Gx, Gy,dx,dy,Area,area,Ix,Iy,ix,iy,resi] = Sectionproperties(b,d,tf,tw,gs1,gs2,gs3,gs4,r);
 	  [temp] = temperature(matrix,b,d,tf,gs1,gs2,gs3,dx,dy,Gx,Gy,x,y,t1,t2,t3,t4,t5,t6,t7);
+	  	  var load = P0;
+	  var Py =0;
+	  for (var i=0; i<=x; i++){
+        for (var j=0; j<=y; j++){
+            if (matrix[i][j] ==1){
+				if (temp[i][j] >= 900) {
+				alert("Please enter temperatures below 800°C");
+				return;
+				}
+				strain = 200;
+				[f,slope]=stress(strain,i,j,temp,E,fy);
+				Py = Py + Area[i][j]*f;
+			}
+		}
+	  }
+				
+	  P0 = area*fy*load;
+	  if (P0 >= Py){
+		  alert("Applied load is exceeding the capacity at given temperature");
+		  return;
+	  }
 	  [tstrain] = tempelong(temp,x,y,matrix);
         var ststrain=0;
       var E = 200000;
@@ -101,11 +137,6 @@ function maincode(P0,d,b,tf,tw,fy,axs,t1,t4,t5){
     }
   }
   var p = (P0/(area*E))-ststrain;
-  var load = P0;
-	  P0 = load*1000;
-      console.log(P0);
-	  var Py = area*fy;
-	  console.log(Py);
 	  var phi = 0;
 	  var k = -1;
 	  for (ki=-45; ki<46; ki++){
@@ -223,7 +254,7 @@ while (Math.abs(error)>tolerr){
     var k = 0;
     countr = countr +1;
     for (var i = 0; i <= x; i++){
-        for (var j = 0; j <= x; j++){
+        for (var j = 0; j <= y; j++){
             if (matrix[i][j] ==1){
                 if (axs ==0){
                    
@@ -247,29 +278,26 @@ while (Math.abs(error)>tolerr){
  // if (countr<5){
  //         forcevar= area*200000*0.01; 
 //  }
-  if (countr > 0 && countr < 15){
-    forcevar = area*200000*0.07;
-  }
-  if (countr > 14 && countr < 30){
+//  if (countr > 0 && countr < 15){
+//    forcevar = area*200000*0.07;
+//  }
+  if (countr > 0 && countr < 30){
     forcevar = area*2000000*0.1;
   }
     if (countr > 29 && countr < 40){
     forcevar = area*200000*0.5;
   }
-      if (countr > 39 && countr < 80){
+      if (countr > 39 && countr < 100){
     forcevar = area*200000;
   }
-      if (countr > 79 && countr < 100){
-    forcevar = area*200000*5;
-  }
   if (countr > 99 && countr < 120){
-    forcevar = area*200000*7;
+    forcevar = area*200000;
   }
   if (countr > 119 && countr < 150){
-    forcevar = area*200000*25;
+    forcevar = area*200000*7;
   }
     if (countr > 149){
-    forcevar = area*200000*50;
+    forcevar = area*200000*20;
   }
   
 
